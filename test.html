@@ -1,86 +1,175 @@
+<!DOCTYPE html>
 <html>
-<head>
-<title>Test Midtrans Snap</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<CLIENT-KEY>"></script>
-<script>
-var myHeaders = new Headers();
-myHeaders.append("Accept", "application/json");
-myHeaders.append("Content-Type", "application/json");
-myHeaders.append("Authorization", "Basic AUTH_STRING");
-
-rorderid = Math.floor(Math.random() * 898) + 101;
-rgrossamount = Math.floor(Math.random() * 898) + 101;
-
-var raw = JSON.stringify({
-  "transaction_details": {
-    "order_id": rorderid,
-    "gross_amount": rgrossamount
-  },
-  "credit_card": {
-    "secure": true
-  }
-});
-
-var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: raw,
-  redirect: 'follow'
-};
-
-var rresult;
-fetch("https://corsanywhere.herokuapp.com/https://app.sandbox.midtrans.com/snap/v1/transactions", requestOptions)
-  .then(response => response.text())
-  .then(result => rresult = result)
-  .catch(error => console.log('error', error));
-
-
-window.addEventListener("load", function(){
-              function rsendsheet() {
-                  rstatuspay = document.getElementById('rstatuspay').innerHTML;
-                  document.getElementById('rform').innerHTML = "<form method='post' action='<WEB-APP-URL>' target='riframeform'><input type='hidden' name='rorderid' value='" + rorderid + "'/><input type='hidden' name='rgrossamount' value='" + rgrossamount + "'/><input type='hidden' name='rstatuspay' value='" + rstatuspay + "'/><input type='submit' id='rsendbutton' style='opacity:0;'/><iframe name='riframeform' style='display:none;'></iframe>";
-                  document.getElementById('rsendbutton').addEventListener('click', function() { setTimeout(function(){document.getElementById('rform').innerHTML = ""}, 1); });
-                  document.getElementById('rsendbutton').click();
-              }
-    setTimeout(function(){
-        rresultjson = JSON.parse(rresult);
-        rtoken = rresultjson.token;
-        function rsnappay() {
-            snap.pay(rtoken, {
+  <head>
+    <title>Midtrans Snap Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  </head>
+  <body>
+    <center>
+      <table>
+        <tr>
+          <th colspan="2">Transaction Details</th>
+        </tr>
+        <tr>
+          <th>Order ID</th>
+          <td><span id="orderid"> </span></td>
+        </tr>
+        <tr>
+          <th>Gross Amount</th>
+          <td><span id="grossamount"> </span></td>
+        </tr>
+        <tr>
+          <th colspan="2">Item Details</th>
+        </tr>
+        <tr>
+          <th>Item ID</th>
+          <td><span id="itemid">ITEM1</span></td>
+        </tr>
+        <tr>
+          <th>Item Name</th>
+          <td><span id="itemname">Midtrans Bear</span></td>
+        </tr>
+        <tr>
+          <th>Item Quantity</th>
+          <td><span id="quantity"> </span></td>
+        </tr>
+        <tr>
+          <th>Item Price</th>
+          <td><span id="itemprice"> </span></td>
+        </tr>
+        <tr>
+          <th colspan="2">Customer Details</th>
+        </tr>
+        <tr>
+          <th>First Name</th>
+          <td><span id="firstname">TEST</span></td>
+        </tr>
+        <tr>
+          <th>Last Name</th>
+          <td><span id="lastname">MIDTRANSER</span></td>
+        </tr>
+        <tr>
+          <th>Email</th>
+          <td><span id="email">test@midtrans.com</span></td>
+        </tr>
+        <tr>
+          <th>Phone</th>
+          <td><span id="phone">+628123456</span></td>
+        </tr>
+        <tr>
+          <th colspan="2">Payment</th>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <center><span id="button">Please wait...</span></center>
+            <center><span id="info"> </span></center>
+            <center><span id="form"> </span></center>
+          </td>
+        </tr>
+      </table>
+    </center>
+    <script>
+      var orderidrandom = Math.floor(Math.random() * 888888) + 111111;
+      var quantityrandom = Math.floor(Math.random() * 8) + 1;
+      var itempricerandom = Math.floor(Math.random() * 888888) + 111111;
+      document.getElementById("orderid").innerHTML = orderidrandom;
+      document.getElementById("grossamount").innerHTML = itempricerandom * quantityrandom;
+      document.getElementById("quantity").innerHTML = quantityrandom;
+      document.getElementById("itemprice").innerHTML = itempricerandom;
+      var orderid = document.getElementById("orderid").innerHTML;
+      var grossamount = document.getElementById("grossamount").innerHTML;
+      var itemid = document.getElementById("itemid").innerHTML;
+      var itemname = document.getElementById("itemname").innerHTML;
+      var quantity = document.getElementById("quantity").innerHTML;
+      var itemprice = document.getElementById("itemprice").innerHTML;
+      var firstname = document.getElementById("firstname").innerHTML;
+      var lastname = document.getElementById("lastname").innerHTML;
+      var email = document.getElementById("email").innerHTML;
+      var phone = document.getElementById("phone").innerHTML;
+      
+      var myHeaders = new Headers();
+      myHeaders.append("Accept", "application/json");
+      myHeaders.append("Content-Type", "application/json");
+      myHeaders.append("Authorization", "Basic <AUTH_STRING = Base64(SERVER_KEY + :)>");
+      
+      var raw = JSON.stringify({
+        "transaction_details": {
+          "order_id": orderid,
+          "gross_amount": grossamount
+        },
+        "item_details": [{
+          "id": itemid,
+          "price": itemprice,
+          "quantity": quantity,
+          "name": itemname
+        }],
+        "customer_details": {
+          "first_name": firstname,
+          "last_name": lastname,
+          "email": email,
+          "phone": phone
+        },
+        "credit_card": {
+          "secure": true
+        }
+      });
+      
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+      };
+      
+      var resultfetch;
+      fetch("https://corsanywhere.herokuapp.com/https://app.sandbox.midtrans.com/snap/v1/transactions", requestOptions)
+        .then(response => response.text())
+        .then(result => resultfetch = JSON.parse(result))
+        .catch(error => console.log('error', error));
+      
+      window.addEventListener("load", function() {
+        function gsheetspost() {
+          paymentstatus = document.getElementById('paymentstatus').innerHTML;
+          document.getElementById('form').innerHTML = "Please wait...<form method='post' action='<WEB-APP-URL>' target='formiframe'><input type='hidden' name='orderid' value='" + orderid + "'/><input type='hidden' name='grossamount' value='" + grossamount + "'/><input type='hidden' name='itemid' value='" + itemid + "'/><input type='hidden' name='itemname' value='" + itemname + "'/><input type='hidden' name='quantity' value='" + quantity + "'/><input type='hidden' name='itemprice' value='" + itemprice + "'/><input type='hidden' name='firstname' value='" + firstname + "'/><input type='hidden' name='lastname' value='" + lastname + "'/><input type='hidden' name='email' value='" + email + "'/><input type='hidden' name='phone' value='" + phone + "'/><input type='hidden' name='paymentstatus' value='" + paymentstatus + "'/><input type='submit' id='formsendbutton' style='opacity:0;'/></form><iframe name='formiframe' style='opacity:0;'> </iframe>";
+          document.getElementById('formsendbutton').addEventListener('click', function() {
+            setTimeout(function() {
+              document.getElementById('form').innerHTML = "";
+            }, 1000);
+          });
+          document.getElementById('formsendbutton').click();
+        }
+        setTimeout(function() {
+          token = resultfetch.token;
+          function snappay() {
+            snap.pay(token, {
               onSuccess: function(result){
-                  document.getElementById('rinfo').innerHTML = "[<span id='rstatuspay'></span>]: Terima kasih telah melakukan pembayaran. :)";
-                  document.getElementById('rstatuspay').innerHTML = "SUCCESS";
-                  rsendsheet();
+                document.getElementById('info').innerHTML = "[<span id='paymentstatus'> </span>]: Thank you for making the payment, your order will be processed soon. :)";
+                document.getElementById('paymentstatus').innerHTML = "PAID";
+                gsheetspost();
               },
               onPending: function(result){
-                  document.getElementById('rinfo').innerHTML = "[<span id='rstatuspay'></span>]: Mohon lakukan pembayaran sesuai instruksi yang diberikan.";
-                  document.getElementById('rstatuspay').innerHTML = "PENDING";
+                document.getElementById('info').innerHTML = "[<span id='paymentstatus'> </span>]: Please make payment according to the instructions given.";
+                document.getElementById('paymentstatus').innerHTML = "WAITING";
+                gsheetspost();
               },
               onError: function(result){
-                  document.getElementById('rinfo').innerHTML = "[<span id='rstatuspay'></span>]: Mohon maaf pembayaran Anda gagal.";
-                  document.getElementById('rstatuspay').innerHTML = "ERROR";
+                document.getElementById('info').innerHTML = "[<span id='paymentstatus'> </span>]: Thank you, your payment will be checked and we will process it soon.";
+                document.getElementById('paymentstatus').innerHTML = "CHECKING";
+                gsheetspost();
               },
               onClose: function(){
-                  document.getElementById('rinfo').innerHTML = "[<span id='rstatuspay'></span>]: Anda belum melakukan pembayaran.";
-                  document.getElementById('rstatuspay').innerHTML = "CLOSE";
+                document.getElementById('info').innerHTML = "[<span id='paymentstatus'> </span>]: Sorry, you haven't completed the payment yet.";
+                document.getElementById('paymentstatus').innerHTML = "UNPAID";
+                gsheetspost();
               }
             });
-        };
-        document.getElementById('rbuttonpay').innerHTML = "<button id='rpaybutton'>Bayar Sekarang</button>";
-        document.getElementById('rpaybutton').addEventListener('click', rsnappay);
-        document.getElementById('rpaybutton').click();
-    }, 5000);
-});
-</script>
-</head>
-<body>
-<center>
-<span id="rbuttonpay">Please wait ...</span>
-<br/><br/>
-<span id="rinfo"></span>
-<br/><br/>
-<span id="rform"></span>
-</center>
-</body>
+          };
+          document.getElementById('button').innerHTML = "<button id='paybutton'>Bayar Sekarang</button>";
+          document.getElementById('paybutton').addEventListener('click', snappay);
+          document.getElementById('paybutton').click();
+        }, 5000);
+      });
+    </script>
+    <script type="text/javascript" src="https://corsanywhere.herokuapp.com/https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<CLIENT-KEY>"> </script>
+  </body>
 </html>
