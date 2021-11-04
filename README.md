@@ -1,8 +1,8 @@
 # Midtrans HTML
-
 - Midtrans SNAP Documentation: https://snap-docs.midtrans.com/
 - Google Sheets: https://github.com/dwyl/learn-to-send-email-via-google-script-html-no-server
 - CORS Anywhere: https://github.com/Rob--W/cors-anywhere
+- JavaScript Obfuscator: https://obfuscator.io/
 
 # Demo
 - Website: https://rifqi.nasihosting.com/test.html
