@@ -31,7 +31,7 @@
         </tr>
         <tr>
           <th>Item Quantity</th>
-          <td><span id="quantity"> </span></td>
+          <td><span id="itemquantity"> </span></td>
         </tr>
         <tr>
           <th>Item Price</th>
@@ -70,17 +70,17 @@
     </center>
     <script>
       var orderidrandom = Math.floor(Math.random() * 888888) + 111111;
-      var quantityrandom = Math.floor(Math.random() * 8) + 1;
+      var itemquantityrandom = Math.floor(Math.random() * 8) + 1;
       var itempricerandom = Math.floor(Math.random() * 888888) + 111111;
       document.getElementById("orderid").innerHTML = orderidrandom;
-      document.getElementById("grossamount").innerHTML = itempricerandom * quantityrandom;
-      document.getElementById("quantity").innerHTML = quantityrandom;
+      document.getElementById("grossamount").innerHTML = itempricerandom * itemquantityrandom;
+      document.getElementById("itemquantity").innerHTML = itemquantityrandom;
       document.getElementById("itemprice").innerHTML = itempricerandom;
       var orderid = document.getElementById("orderid").innerHTML;
       var grossamount = document.getElementById("grossamount").innerHTML;
       var itemid = document.getElementById("itemid").innerHTML;
       var itemname = document.getElementById("itemname").innerHTML;
-      var quantity = document.getElementById("quantity").innerHTML;
+      var itemquantity = document.getElementById("itemquantity").innerHTML;
       var itemprice = document.getElementById("itemprice").innerHTML;
       var firstname = document.getElementById("firstname").innerHTML;
       var lastname = document.getElementById("lastname").innerHTML;
@@ -100,7 +100,7 @@
         "item_details": [{
           "id": itemid,
           "price": itemprice,
-          "quantity": quantity,
+          "quantity": itemquantity,
           "name": itemname
         }],
         "customer_details": {
@@ -130,12 +130,7 @@
       window.addEventListener("load", function() {
         function gsheetspost() {
           paymentstatus = document.getElementById('paymentstatus').innerHTML;
-          document.getElementById('form').innerHTML = "Please wait...<form method='post' action='<WEB-APP-URL>' target='formiframe'><input type='hidden' name='orderid' value='" + orderid + "'/><input type='hidden' name='grossamount' value='" + grossamount + "'/><input type='hidden' name='itemid' value='" + itemid + "'/><input type='hidden' name='itemname' value='" + itemname + "'/><input type='hidden' name='quantity' value='" + quantity + "'/><input type='hidden' name='itemprice' value='" + itemprice + "'/><input type='hidden' name='firstname' value='" + firstname + "'/><input type='hidden' name='lastname' value='" + lastname + "'/><input type='hidden' name='email' value='" + email + "'/><input type='hidden' name='phone' value='" + phone + "'/><input type='hidden' name='paymentstatus' value='" + paymentstatus + "'/><input type='submit' id='formsendbutton' style='opacity:0;'/></form><iframe name='formiframe' style='opacity:0;'> </iframe>";
-          document.getElementById('formsendbutton').addEventListener('click', function() {
-            setTimeout(function() {
-              document.getElementById('form').innerHTML = "";
-            }, 1000);
-          });
+          document.getElementById('form').innerHTML = "Please wait...<form method='post' action='https://corsanywhere.herokuapp.com/<WEB-APP-URL>' target='formiframe'><input type='hidden' name='orderid' value='" + orderid + "'/><input type='hidden' name='grossamount' value='" + grossamount + "'/><input type='hidden' name='itemid' value='" + itemid + "'/><input type='hidden' name='itemname' value='" + itemname + "'/><input type='hidden' name='itemquantity' value='" + itemquantity + "'/><input type='hidden' name='itemprice' value='" + itemprice + "'/><input type='hidden' name='firstname' value='" + firstname + "'/><input type='hidden' name='lastname' value='" + lastname + "'/><input type='hidden' name='email' value='" + email + "'/><input type='hidden' name='phone' value='" + phone + "'/><input type='hidden' name='paymentstatus' value='" + paymentstatus + "'/><input type='submit' id='formsendbutton' style='opacity:0;'/></form><iframe name='formiframe' onload=\"setTimeout(function() { document.getElementById('form').innerHTML = ''; }, 1000);\" onerror=\"setTimeout(function() { document.getElementById('form').innerHTML = 'Sorry, the status of your transaction failed to be recorded, please contact the Admin by mentioning your Order ID.'; }, 1000);\" style='opacity:0;'> </iframe>";
           document.getElementById('formsendbutton').click();
         }
         setTimeout(function() {
@@ -149,7 +144,7 @@
               },
               onPending: function(result){
                 document.getElementById('info').innerHTML = "[<span id='paymentstatus'> </span>]: Please make payment according to the instructions given.";
-                document.getElementById('paymentstatus').innerHTML = "WAITING";
+                document.getElementById('paymentstatus').innerHTML = "PENDING";
                 gsheetspost();
               },
               onError: function(result){
